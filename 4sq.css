@@ -1,0 +1,27 @@
+board {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    margin: 0 auto;
+    border: 2px solid #ccc;
+    width: 212px;
+}
+
+four {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    border: 2px solid #ccc;
+}
+
+sq {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    width: 50px;
+    border: 1px solid #555;
+    position: relative;
+}
+
+sq.updating {
+    background: #333;
+}

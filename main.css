@@ -1,0 +1,50 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font: inherit;
+}
+
+:root {
+    font-family: sans-serif;
+    font-size: 13px;
+}
+
+html {
+    color-scheme: dark light;
+    background: #111;
+}
+
+body {
+    min-height: 100vh;
+}
+
+img, picture, svg, video {
+    display: block;
+    max-width: 100%;
+}
+
+header, footer {
+    display: block;
+    padding: 1rem;
+}
+
+header {
+    font-size: 1.5rem;
+    background: #333;
+    margin-bottom: 1rem;
+}
+
+footer {
+    text-align: center;
+    margin-top: 3rem;
+}
+
+main {
+    display: block;
+    margin: 0 auto;
+    max-width: 900px;
+}
