@@ -40,18 +40,21 @@ class Game {
         this.dimension = dimension;
         this.inputs = inputs;
         this.debug = debug;
-        this.board = this.generateGame(this.d, this.inputs);
+        this.board = this.newGame(this.d, this.inputs);
     }
 
-    generateGame(dimension, inputs) {
+    newGame(dimension, inputs) {
         if (dimension <= 0) return null;
         if (inputs.length != dimension ** 2) return null;
         const game = [];
         for (let y = 0; y < dimension ** 2; y++) {
+            let usableInputs = inputs;
             let row = [];
             for (let x = 0; x < dimension ** 2; x++) {
-                let randIndex = Math.floor(Math.random() * inputs.length);
-                row.push(inputs[randIndex]);
+                let randIndex = Math.floor(Math.random() * usableInputs.length);
+                let input = usableInputs[randIndex];
+                row.push(input);
+                usableInputs = usableInputs.filter(val => val != input);
             }
             game.push(row);
         }
@@ -73,11 +76,11 @@ class Game {
     }
 
     validate() {
-        if (!this.testGameIsSquare()) return [false, 'sq'];
-        if (!this.testRows(this.debug)) return [false, 'r0'];
-        if (!this.testColumns(this.debug)) return [false, 'c0'];
-        if (!this.testBlocks(this.debug)) return [false, 'bl'];
-        return [true, null];
+        if (!this.testGameIsSquare()) return false;
+        if (!this.testRows(this.debug)) return false;
+        if (!this.testColumns(this.debug)) return false;
+        if (!this.testBlocks(this.debug)) return false;
+        return true;
     }
 
     validateSection(section=[1,2,3,4]) {
