@@ -77,65 +77,46 @@ class Game {
 
     validate() {
         if (!this.testGameIsSquare()) return false;
-        if (!this.testRows(this.debug)) return false;
-        if (!this.testColumns(this.debug)) return false;
-        if (!this.testBlocks(this.debug)) return false;
-        return true;
-    }
-
-    validateSection(section=[1,2,3,4]) {
-        if (section.length != this.inputs.length) return false;
-        if (section == null || this.inputs == null) return false;
-        const sortedSection = section.sort();
-        const sortedInputs = this.inputs.sort();
-        for (let i = 0; i < this.inputs.length; i++) {
-            if (sortedSection[i] != sortedInputs[i]) return false;
-        }
-        return true;
-    }
-
-    testGameIsSquare() {
-        // make sure the game is square
-        const gameHeight = this.board.length; // get height by counting rows
-        for (let i = 0; i < this.board.length; i++) {
-            // each row length should match height
-            if (this.board[i].length != gameHeight) return false;
-        }
-        return true;
-    }
-
-    testRows(debug=false) {
-        if (debug) console.log("ROWS: %o", this.board);
-        // validate each row
-        for (let i = 0; i < this.board.length; i++) {
-            if(!this.validateSection(this.board[i])) return false;
-        }
-        return true;
-    }
-
-    testColumns(debug=false) {
-        // height and width should be the same
-        const columnHeight = this.board.length;
-        // generate columns
-        const columns = [];
-        for (let c = 0; c < columnHeight; c++) {
-            let column = [];
-            for (let r = 0; r < columnHeight; r++) {
-                column.push(this.board[r][c]);
+        const rows = this.getRows();
+        const cols = this.getColumns();
+        const blocks = this.getBlocks();
+        console.log("ROWS: %o", rows);
+        console.log("COLS: %o", cols);
+        console.log("BLOCKS: %o", blocks);
+        for (let i = 0; i < this.d ** 2; i++) {
+            if (!this.validateSection([...rows[i]])) {
+                console.log("Fail on row " + i);
+                return false;
             }
-            columns.push(column);
-        }
-        if (debug) console.log("COLS: %o", columns);
-        // make sure the game is still square
-        if (columns.length != this.board.length) return false;
-        // validate each column
-        for (let i = 0; i < columns.length; i++) {
-            if (!this.validateSection(columns[i])) return false;
+            if (!this.validateSection([...cols[i]])) {
+                console.log("Fail on col " + i);
+                return false;
+            }
+            if (!this.validateSection([...blocks[i]])) {
+                console.log("Fail on block " + i);
+                return false;
+            }
         }
         return true;
     }
 
-    testBlocks(debug=false) {
+    getRows() {
+        return this.board;
+    }
+
+    getColumns() {
+        const columns = [];
+        for (let x = 0; x < this.board.length; x++) {
+            let col = [];
+            for (let y = 0; y < this.board.length; y++) {
+                col.push(this.board[y][x]);
+            }
+            columns.push(col);
+        }
+        return columns;
+    }
+
+    getBlocks() {
         const blockCount = this.dimension ** 2;
         const gameDimension = this.board.length;
         // game dimension must be multiple of dimension
@@ -181,11 +162,26 @@ class Game {
             }
             count += 1;
         }
-        if (blocks.length !== blockCount) return false;
-        if (debug) console.log(blocks);
-        // validate each block
-        for (let i = 0; i < blocks.length; i++) {
-            if(!this.validateSection(blocks[i])) return false;
+        return blocks;
+    }
+
+    validateSection(section=[1,2,3,4]) {
+        if (section.length != this.inputs.length) return false;
+        if (section == null || this.inputs == null) return false;
+        const sortedSection = section.sort();
+        const sortedInputs = this.inputs.sort();
+        for (let i = 0; i < this.inputs.length; i++) {
+            if (sortedSection[i] != sortedInputs[i]) return false;
+        }
+        return true;
+    }
+
+    testGameIsSquare() {
+        // make sure the game is square
+        const gameHeight = this.board.length; // get height by counting rows
+        for (let i = 0; i < this.board.length; i++) {
+            // each row length should match height
+            if (this.board[i].length != gameHeight) return false;
         }
         return true;
     }
