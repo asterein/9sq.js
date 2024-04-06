@@ -35,12 +35,28 @@ window.onload = () => {
 }
 
 class Game {
-    constructor(dimension=2, inputs=[1,2,3,4], debug=false) {
+
+    constructor(dimension=2, inputs=[1,2,3,4], debug=false, max=150) {
         this.d = dimension;
         this.dimension = dimension;
         this.inputs = inputs;
         this.debug = debug;
-        this.board = this.newGame(this.d, this.inputs);
+        this.board = this.generate(max);
+    }
+
+    generate(max=150) {
+        let tmp = this.newGame(this.d, this.inputs);
+        let count = 0;
+        while (count < max && tmp === null) {
+            tmp = this.newGame(this.d, this.inputs);
+            count += 1;
+        }
+        if (tmp !== null) {
+            console.log("Successfully generated a board after " + count + " attempts");
+            return tmp;
+        }
+        console.log("Failed to generate a board after " + max + " attempts");
+        return null;
     }
 
     newGame(dimension, inputs) {
@@ -48,17 +64,43 @@ class Game {
         if (inputs.length != dimension ** 2) return null;
         const game = [];
         for (let y = 0; y < dimension ** 2; y++) {
-            let usableInputs = inputs;
+            let usableRowInputs = inputs;
             let row = [];
             for (let x = 0; x < dimension ** 2; x++) {
+                let usableColInputs = inputs;
+                let usedColInputs = [];
+                if (y > 0) {
+                    for (let i = 0; i < y; i++) {
+                        usedColInputs.push(game[i][x]);
+                    }
+                }
+                usableColInputs = [...usableColInputs].filter(val => !usedColInputs.includes(val));
+                let usableInputs = [...usableRowInputs].filter(val => usableColInputs.includes(val));
                 let randIndex = Math.floor(Math.random() * usableInputs.length);
+                if (usableInputs.length === 0) {
+                    return null;
+                }
                 let input = usableInputs[randIndex];
                 row.push(input);
-                usableInputs = usableInputs.filter(val => val != input);
+                usableRowInputs = [...usableRowInputs].filter(val => val != input);
             }
             game.push(row);
+            if (this.debug) this.printGameInProgress(game);
         }
         return game;
+    }
+
+    printGameInProgress(game) {
+        let gameInProgress = "";
+        for (let y = 0; y < game.length; y++) {
+            let row = game[y];
+            let printRow = "";
+            for (let x = 0; x < row.length; x++) {
+                printRow += ` ${row[x]}`;
+            }
+            gameInProgress += printRow + "\n";
+        }
+        console.log(gameInProgress);
     }
 
     print(autoPrint=true) {
@@ -80,9 +122,11 @@ class Game {
         const rows = this.getRows();
         const cols = this.getColumns();
         const blocks = this.getBlocks();
-        console.log("ROWS: %o", rows);
-        console.log("COLS: %o", cols);
-        console.log("BLOCKS: %o", blocks);
+        if (this.debug) {
+            console.log("ROWS: %o", rows);
+            console.log("COLS: %o", cols);
+            console.log("BLOCKS: %o", blocks);
+        }
         for (let i = 0; i < this.d ** 2; i++) {
             if (!this.validateSection([...rows[i]])) {
                 console.log("Fail on row " + i);
@@ -191,11 +235,12 @@ function test() {
     const gameState = new Game(2, [1,2,3,4]);
     gameState.print();
     console.log(gameState.validate());
-
+    /*
     const game9 = new Game(3, [1,2,3,4,5,6,7,8,9]);
     game9.debug = true;
     game9.print();
     console.log(game9.validate());
+    */
 }
 
 
