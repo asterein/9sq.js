@@ -1,14 +1,15 @@
 board {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     margin: 0 auto;
     border: 2px solid #ccc;
-    width: 212px;
+    width: calc(450px + 12px);
 }
 
-four {
+four,
+nine {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     border: 2px solid #ccc;
 }
 

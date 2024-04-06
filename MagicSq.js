@@ -1,69 +1,10 @@
-window.onload = () => {
-    const body = document.querySelector('body');
-    let state = {
-        userInputProgress: false,
-        targetSq: null,
-    }
-
-    let game = new Game(2, [1,2,3,4]);
-    let gameState = game.getBoard();
-
-    function populateInterface() {
-        const d = game.getDimension() ** 2;
-        const board = game.getBlocks();
-        game.print();
-        const squares = document.querySelectorAll('sq');
-        const values = [];
-        for (let y = 0; y < d; y++) {
-            let row = board[y];
-            for (let x = 0; x < d; x++) {
-                values.push(row[x]);
-            }
-        }
-        if (squares.length !== values.length) {
-            alert('ERROR: Squares count and values count do not match!');
-        }
-        for (let i = 0; i < squares.length; i++) {
-            squares[i].innerHTML = values[i];
-        }
-    }
-
-    populateInterface();
-
-    function resetState() {
-        if (state.userInputProgress) {
-            state.userInputProgress = false;
-        }
-        if (state.targetSq) {
-            state.targetSq.classList.remove('updating');
-            state.targetSq = null;
-        }
-    }
-
-    body.addEventListener('click', (e) => {
-       resetState();
-        const isSq = e.target.nodeName === "SQ";
-
-        if (isSq) {
-            state.userInputProgress = true;
-            e.target.classList.add('updating');
-            state.targetSq = e.target;
-        }
-    });
-
-    window.addEventListener('keyup', (e) => {
-        if (state.userInputProgress) {
-            state.targetSq.innerText = e.key;
-            resetState();
-        }
-    });
-}
-
-class Game {
+class MagicSq {
+    // MagicSq
 
     #board;
     #dimension;
     #inputs;
+    #delimiter = "xcv"; // delimiter for use in board generation
 
     constructor(dimension=2, inputs=[1,2,3,4], debug=false, threshold=1000) {
         this.debug = debug;
@@ -73,6 +14,7 @@ class Game {
     }
 
     print(game=this.#board, autoPrint=true) {
+        // print a board
         if (game === null) return;
         if (game === "_") {
             game = this.#board;
@@ -91,6 +33,9 @@ class Game {
     }
 
     validate(game=this.#board) {
+        // check that the board is valid, i.e.
+        // all rows, columns, and blocks include
+        // all inputs with no repeats
         if (game === null) return;
         if (!this.#testGameIsSquare()) return false;
         const rows = this.getRows(game);
@@ -119,22 +64,31 @@ class Game {
     }
 
     getInputs() {
+        // return inputs
         return this.#inputs;
     }
 
     getDimension() {
+        // return game dimension
         return this.#dimension;
     }
 
     getBoard() {
+        // return board in rows format
         return this.#board;
     }
 
     getRows(game=this.#board) {
+        // return game in rows format;
+        // defaults to board prop, but
+        // can be any game
         return game;
     }
 
     getColumns(game=this.#board) {
+        // return game in columns format;
+        // defaults to board prop, but can
+        // be any game
         const columns = [];
         for (let x = 0; x < this.#board.length; x++) {
             let col = [];
@@ -147,6 +101,9 @@ class Game {
     }
 
     getBlocks(game=this.#board) {
+        // return game in blocks format;
+        // defaults to board prop, but can
+        // be any game
         const blockCount = this.#dimension ** 2;
         const gameDimension = game.length;
         // game dimension must be multiple of dimension
@@ -176,8 +133,7 @@ class Game {
             x: 0,
             y: 0,
         }
-        let count = 0;
-        while (count < blockCount) {
+        for (let c = 0; c < blockCount; c++) {
             let y = origin.y;
             let x = origin.x;
             let block = splitRows[y][x];
@@ -191,15 +147,18 @@ class Game {
             } else if (x < this.#dimension) {
                 origin.x += 1;
             }
-            count += 1;
         }
         return blocks;
     }
 
     #generate(threshold=1000) {
+        // generate a new game using the specified
+        // threshold
         let tmp = this.#newGame(this.#dimension, this.#inputs);
         let count = 0;
         while (count < threshold && tmp === null) {
+            // attempt to re-render a new game until
+            // we hit the threshold
             tmp = this.#newGame(this.#dimension, this.#inputs);
             count += 1;
         }
@@ -212,6 +171,8 @@ class Game {
     }
 
     #blankBoard() {
+        // generate a blank board based
+        // on the dimension prop
         const blank = [];
         for (let y = 0; y < this.#dimension ** 2; y++) {
             let row = new Array(this.#dimension ** 2).fill(null);
@@ -220,10 +181,11 @@ class Game {
         return blank;
     }
 
-    #newGame(dimension, inputs) {
+    #newGame(dimension, inputs, delimiter=this.#delimiter) {
+        // create a new game using the passed
+        // dimensions, inputs, and delimiter
         if (dimension <= 0) return null;
         if (inputs.length != dimension ** 2) return null;
-        const delimiter = "xcv";
         const game = [];
         const fill = this.#blankBoard();
         for (let y = 0; y < dimension ** 2; y++) {
@@ -238,6 +200,7 @@ class Game {
                     for (let i = 0; i < dimension ** 2; i++) {
                         let activeBlock = tmpBlocks[i];
                         if (activeBlock.includes(delimiter)) {
+                            // get inputs which have already been used in the block
                             for (let v = 0; v < activeBlock.length; v++) {
                                 if (activeBlock[v]) usedBlockInputs.push(activeBlock[v]);
                             }
@@ -287,7 +250,7 @@ class Game {
     }
 
     #validateSection(section=[1,2,3,4]) {
-        // make sue the section matches the given inputs
+        // make sure the section matches the given inputs
         if (section.length != this.#inputs.length) return false;
         if (section == null || this.#inputs == null) return false;
         const sortedSection = section.sort();
