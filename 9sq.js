@@ -2,6 +2,7 @@ let state = {
     userInputProgress: false,
     targetSq: null,
     game: null,
+    mode: 3,
 }
 
 function resetState() {
@@ -12,6 +13,15 @@ function resetState() {
         state.targetSq.classList.remove('updating');
         state.targetSq = null;
     }
+}
+
+function toggleMode() {
+    const mode = document.querySelector('mode');
+    if (mode === null) return;
+    if (!state?.mode) return;
+    state.mode = state.mode === 9 ? 0 : state.mode + 1;
+    mode.innerHTML = state.mode;
+    clearInterface();
 }
 
 function getInterfaceState(dimension=3) {
@@ -65,6 +75,19 @@ function populateInterface() {
     for (let i = 0; i < squares.length; i++) {
         squares[i].innerHTML = values[i];
     }
+}
+
+function clearInterface() {
+    // clear all squares
+    const squares = document.querySelectorAll('sq');
+    for (let i = 0; i < squares.length; i++) {
+        squares[i].innerHTML = '';
+    }
+}
+
+function play(id) {
+    const audio = new Audio(`/${id}.mp3`);
+    audio.play();
 }
 
 window.onload = () => {

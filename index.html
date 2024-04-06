@@ -13,107 +13,12 @@
             9sq.js
         </header>
         <main>
-            <board>
-               <nine>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                </nine>
-                <nine>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                </nine>
-                <nine>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                </nine>
-                <nine>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                </nine>
-                <nine>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                </nine>
-                <nine>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                </nine>
-                <nine>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                </nine>
-                <nine>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                </nine>
-                <nine>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                    <sq></sq>
-                </nine>
-            </board>
+          <panel>
+            <button-panel>
+              <button onclick="toggleMode()">Mode: <mode>3</mode></button>
+              <button onclick="newGame()">New Game</button>
+              <button onclick="getInterfaceState()">Log Board</button>
+            </button-panel>
             <controls>
               <ctrl>1</ctrl>
               <ctrl>2</ctrl>
@@ -124,12 +29,63 @@
               <ctrl>7</ctrl>
               <ctrl>8</ctrl>
               <ctrl>9</ctrl>
+              <ctrl onclick="play('wnvd')"></ctrl>
               <ctrl>x</ctrl>
+              <ctrl></ctrl>
             </controls>
+          </panel>
+          <board>
+            <nine>
+                <sq></sq><sq></sq><sq></sq>
+                <sq></sq><sq></sq><sq></sq>
+                <sq></sq><sq></sq><sq></sq>
+            </nine>
+            <nine>
+                <sq></sq><sq></sq><sq></sq>
+                <sq></sq><sq></sq><sq></sq>
+                <sq></sq><sq></sq><sq></sq>
+            </nine>
+            <nine>
+                <sq></sq><sq></sq><sq></sq>
+                <sq></sq><sq></sq><sq></sq>
+                <sq></sq><sq></sq><sq></sq>
+            </nine>
+            <nine>
+                <sq></sq><sq></sq><sq></sq>
+                <sq></sq><sq></sq><sq></sq>
+                <sq></sq><sq></sq><sq></sq>
+            </nine>
+            <nine>
+                <sq></sq><sq></sq><sq></sq>
+                <sq></sq><sq></sq><sq></sq>
+                <sq></sq><sq></sq><sq></sq>
+            </nine>
+            <nine>
+                <sq></sq><sq></sq><sq></sq>
+                <sq></sq><sq></sq><sq></sq>
+                <sq></sq><sq></sq><sq></sq>
+            </nine>
+            <nine>
+                <sq></sq><sq></sq><sq></sq>
+                <sq></sq><sq></sq><sq></sq>
+                <sq></sq><sq></sq><sq></sq>
+            </nine>
+            <nine>
+                <sq></sq><sq></sq><sq></sq>
+                <sq></sq><sq></sq><sq></sq>
+                <sq></sq><sq></sq><sq></sq>
+            </nine>
+            <nine>
+                <sq></sq><sq></sq><sq></sq>
+                <sq></sq><sq></sq><sq></sq>
+                <sq></sq><sq></sq><sq></sq>
+            </nine>
+          </board>
         </main>
+        <super-secret-stuff>
+        </super-secret-stuff>
         <footer>
-          <button onclick="newGame()">New Game</button>
-          <button onclick="getInterfaceState()">click me</button>
+          hmmmm
         </footer>
         <script src="9sq.js"></script>
     </body>

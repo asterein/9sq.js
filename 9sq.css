@@ -1,16 +1,35 @@
+:root {
+    --bold-border-color: #ccc;
+    --light-border-color: #555;
+}
+
 board {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     margin: 0 auto;
-    border: 2px solid #ccc;
-    width: calc(450px + 12px);
+    width: calc(450px + 4px + 12px);
+    border: 2px solid var(--bold-border-color);
 }
 
-four,
+panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: calc(450px + 4px + 12px);
+    margin: 0 auto;
+    margin-bottom: 2rem;
+}
+
+button-panel {
+    display: grid;
+    grid-gap: 0.5rem;
+
+}
+
 nine {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    border: 2px solid #ccc;
+    border: 2px solid var(--bold-border-color);
 }
 
 sq {
@@ -19,10 +38,39 @@ sq {
     justify-content: center;
     height: 50px;
     width: 50px;
-    border: 1px solid #555;
-    position: relative;
+    border: 1px solid var(--light-border-color);
+    cursor: pointer;
 }
 
 sq.updating {
     background: #333;
+}
+
+controls {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: calc(75px + 4px);
+    border: 2px solid var(--bold-border-color);
+}
+
+ctrl {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    height: 25px;
+    width: 25px;
+    border: 1px solid var(--light-border-color);
+    cursor: pointer;
+}
+
+ctrl.empty {
+    cursor: default;
+}
+
+super-secret-stuff {
+    display: block;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+    opacity: 0;
 }
