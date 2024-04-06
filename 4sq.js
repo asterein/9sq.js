@@ -5,6 +5,30 @@ window.onload = () => {
         targetSq: null,
     }
 
+    let game = new Game(2, [1,2,3,4]);
+    let gameState = game.getBoard();
+
+    function populateInterface() {
+        const d = game.getDimension() ** 2;
+        const board = game.getBoard();
+        const squares = document.querySelectorAll('sq');
+        const values = [];
+        for (let y = 0; y < d; y++) {
+            let row = board[y];
+            for (let x = 0; x < d; x++) {
+                values.push(row[x]);
+            }
+        }
+        if (squares.length !== values.length) {
+            alert('ERROR: Squares count and values count do not match!');
+        }
+        for (let i = 0; i < squares.length; i++) {
+            squares[i].innerHTML = values[i];
+        }
+    }
+
+    populateInterface();
+
     function resetState() {
         if (state.userInputProgress) {
             state.userInputProgress = false;
@@ -40,7 +64,7 @@ class Game {
     #dimension;
     #inputs;
 
-    constructor(dimension=2, inputs=[1,2,3,4], debug=false, threshold=5000) {
+    constructor(dimension=2, inputs=[1,2,3,4], debug=false, threshold=1000) {
         this.debug = debug;
         this.#dimension = dimension;
         this.#inputs = inputs;
@@ -229,12 +253,15 @@ class Game {
                     }
                 }
                 usableColInputs = [...usableColInputs].filter(val => !usedColInputs.includes(val));
+                // get intersection of usable inputs from columns, blocks, and rows
                 let usableInputs = [...usableRowInputs].filter(val => usableColInputs.includes(val) && usableBlockInputs.includes(val));
-                this.print(fill);
-                console.log("USABLE ROW INPUTS: %o", usableRowInputs);
-                console.log("USABLE COL INPUTS: %o", usableColInputs);
-                console.log("USABLE BLOCK INPUTS: %o", usableBlockInputs);
-                console.log("CALCULATED USABLE INPUTS: %o", usableInputs);
+                if (this.debug) {
+                    this.print(fill);
+                    console.log("USABLE ROW INPUTS: %o", usableRowInputs);
+                    console.log("USABLE COL INPUTS: %o", usableColInputs);
+                    console.log("USABLE BLOCK INPUTS: %o", usableBlockInputs);
+                    console.log("CALCULATED USABLE INPUTS: %o", usableInputs);
+                }
                 let randIndex = Math.floor(Math.random() * usableInputs.length);
                 if (usableInputs.length === 0) {
                     return null;
@@ -258,18 +285,14 @@ class Game {
         return game;
     }
 
-    #validateSection(section=[1,2,3,4], strict=true) {
+    #validateSection(section=[1,2,3,4]) {
+        // make sue the section matches the given inputs
         if (section.length != this.#inputs.length) return false;
         if (section == null || this.#inputs == null) return false;
         const sortedSection = section.sort();
         const sortedInputs = this.#inputs.sort();
-        if (strict) {
-            for (let i = 0; i < this.#inputs.length; i++) {
-                if (sortedSection[i] != sortedInputs[i]) return false;
-            }
-        } else {
-            console.log("TODO: implement strict=false");
-            return false;
+        for (let i = 0; i < this.#inputs.length; i++) {
+            if (sortedSection[i] != sortedInputs[i]) return false;
         }
         return true;
     }
@@ -284,17 +307,3 @@ class Game {
         return true;
     }
 }
-
-function test() {
-    const gameState = new Game(2, [1,2,3,4]);
-    gameState.print();
-    console.log(gameState.validate());
-/*
-    const game9 = new Game(3, [1,2,3,4,5,6,7,8,9], true);
-    game9.print();
-    console.log(game9.validate());
-    */
-}
-
-
-
