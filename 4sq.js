@@ -189,7 +189,7 @@ class Game {
     #blankBoard() {
         const blank = [];
         for (let y = 0; y < this.#dimension ** 2; y++) {
-            let row = new Array(this.#dimension).fill(null);
+            let row = new Array(this.#dimension ** 2).fill(null);
             blank.push(row);
         }
         return blank;
@@ -219,8 +219,9 @@ class Game {
                 }
                 let input = usableInputs[randIndex];
                 row.push(input);
-                fill[y][x] = input;
                 /*
+                // this part doesn't work yet
+                fill[y][x] = input;
                 let tmpBlocks = this.getBlocks(fill);
                 if (this.debug) console.log(tmpBlocks);
                 for (let i = 0; i < this.#dimension ** 2; i++) {
@@ -239,11 +240,13 @@ class Game {
         if (section == null || this.#inputs == null) return false;
         const sortedSection = section.sort();
         const sortedInputs = this.#inputs.sort();
-        for (let i = 0; i < this.#inputs.length; i++) {
-            if (sortedSection[i] != sortedInputs[i]) {
-                if (strict) return false;
-                if (sortedSection[i] !== null) return false;
+        if (strict) {
+            for (let i = 0; i < this.#inputs.length; i++) {
+                if (sortedSection[i] != sortedInputs[i]) return false;
             }
+        } else {
+            console.log("TODO: implement strict=false");
+            return false;
         }
         return true;
     }
