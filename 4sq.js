@@ -40,7 +40,7 @@ class Game {
     #dimension;
     #inputs;
 
-    constructor(dimension=2, inputs=[1,2,3,4], debug=false, threshold=1000) {
+    constructor(dimension=2, inputs=[1,2,3,4], debug=false, threshold=5000) {
         this.debug = debug;
         this.#dimension = dimension;
         this.#inputs = inputs;
@@ -144,7 +144,7 @@ class Game {
             }
             splitRows.push(splitRow);
         }
-        if (this.debug) console.log("SPLIT ROWS: %o", splitRows);
+        // if (this.debug) console.log("SPLIT ROWS: %o", splitRows);
         // generate blocks
         const blocks = [];
         const origin = {
@@ -198,12 +198,29 @@ class Game {
     #newGame(dimension, inputs) {
         if (dimension <= 0) return null;
         if (inputs.length != dimension ** 2) return null;
+        const delimiter = "xcv";
         const game = [];
         const fill = this.#blankBoard();
         for (let y = 0; y < dimension ** 2; y++) {
             let usableRowInputs = inputs;
             let row = [];
             for (let x = 0; x < dimension ** 2; x++) {
+                // get usable block inputs
+                let usableBlockInputs = inputs;
+                let usedBlockInputs = [];
+                if (!(x === 0 && y === 0)) { // skip origin
+                    let tmpBlocks = this.getBlocks(fill);
+                    for (let i = 0; i < dimension ** 2; i++) {
+                        let activeBlock = tmpBlocks[i];
+                        if (activeBlock.includes(delimiter)) {
+                            for (let v = 0; v < activeBlock.length; v++) {
+                                if (activeBlock[v]) usedBlockInputs.push(activeBlock[v]);
+                            }
+                        }
+                    }
+                }
+                usableBlockInputs = [...usableBlockInputs].filter(val => !usedBlockInputs.includes(val));
+                // get usable column inputs
                 let usableColInputs = inputs;
                 let usedColInputs = [];
                 if (y > 0) {
@@ -212,22 +229,28 @@ class Game {
                     }
                 }
                 usableColInputs = [...usableColInputs].filter(val => !usedColInputs.includes(val));
-                let usableInputs = [...usableRowInputs].filter(val => usableColInputs.includes(val));
+                let usableInputs = [...usableRowInputs].filter(val => usableColInputs.includes(val) && usableBlockInputs.includes(val));
+                this.print(fill);
+                console.log("USABLE ROW INPUTS: %o", usableRowInputs);
+                console.log("USABLE COL INPUTS: %o", usableColInputs);
+                console.log("USABLE BLOCK INPUTS: %o", usableBlockInputs);
+                console.log("CALCULATED USABLE INPUTS: %o", usableInputs);
                 let randIndex = Math.floor(Math.random() * usableInputs.length);
                 if (usableInputs.length === 0) {
                     return null;
                 }
                 let input = usableInputs[randIndex];
-                row.push(input);
-                /*
-                // this part doesn't work yet
                 fill[y][x] = input;
-                let tmpBlocks = this.getBlocks(fill);
-                if (this.debug) console.log(tmpBlocks);
-                for (let i = 0; i < this.#dimension ** 2; i++) {
-                    if (!this.#validateSection([...tmpBlocks[i]], false)) return null;
+                // set the next cell as the delimiter
+                if (x === (dimension ** 2) - 1 && y === (dimension ** 2) - 1) {
+                    // no delimiter, we're at the end of the board
+                } else if (x === (dimension ** 2) - 1) {
+                    fill[y+1][0] = delimiter;
+                } else {
+                    fill[y][x+1] = delimiter;
                 }
-                */
+                row.push(input);
+                // filter out used input
                 usableRowInputs = [...usableRowInputs].filter(val => val != input);
             }
             game.push(row);
@@ -266,10 +289,11 @@ function test() {
     const gameState = new Game(2, [1,2,3,4]);
     gameState.print();
     console.log(gameState.validate());
-
+/*
     const game9 = new Game(3, [1,2,3,4,5,6,7,8,9], true);
     game9.print();
     console.log(game9.validate());
+    */
 }
 
 
