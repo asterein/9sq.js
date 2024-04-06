@@ -10,7 +10,8 @@ window.onload = () => {
 
     function populateInterface() {
         const d = game.getDimension() ** 2;
-        const board = game.getBoard();
+        const board = game.getBlocks();
+        game.print();
         const squares = document.querySelectorAll('sq');
         const values = [];
         for (let y = 0; y < d; y++) {
