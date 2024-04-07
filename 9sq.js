@@ -2,7 +2,8 @@ let state = {
     userInputProgress: false,
     targetSq: null,
     game: null,
-    mode: 3,
+    toRemove: [],
+    mode: 5,
 }
 
 function resetState() {
@@ -18,7 +19,6 @@ function resetState() {
 function toggleMode() {
     const mode = document.querySelector('mode');
     if (mode === null) return;
-    if (!state?.mode) return;
     state.mode = state.mode === 9 ? 0 : state.mode + 1;
     mode.innerHTML = state.mode;
     clearInterface();
@@ -45,15 +45,45 @@ function getInterfaceState(dimension=3) {
 }
 
 function newGame() {
+    let newGame = state.game !== null ? confirm('Are you sure you want to start a new game?') : true;
+    if (!newGame) return;
+    clearInterface();
     state.game = new MagicSq(3, [1,2,3,4,5,6,7,8,9], false, 2500);
     if (state.game.getBoard() === null) {
         alert('Game generation failed due to threshold! Please try again!');
         return;
     }
-    populateInterface();
+    generateToRemove(state.game.getDimension() ** 2);
+    populateInterface(state.toRemove);
 }
 
-function populateInterface() {
+function resetGame() {
+    clearInterface();
+    populateInterface(state.toRemove);
+}
+
+function generateToRemove(d) {
+    // calculate which squares to remove
+    let toRemove = [];
+    for (let i = 0; i < state.mode * d; i++) {
+        let x = Math.floor(Math.random() * d);
+        let y = Math.floor(Math.random() * d);
+        let coordinatesExist = toRemove.filter(c => c.x === x && c.y === y);
+        let attempt = 0;
+        while (coordinatesExist.length > 0 && attempt < state.mode) {
+            x = Math.floor(Math.random() * d);
+            y = Math.floor(Math.random() * d);
+            coordinatesExist = toRemove.filter(c => c.x === x && c.y === y);
+            attempt += 1;
+        }
+        toRemove.push({ x: x, y: y });
+    }
+    toRemove = toRemove.sort((a,b) => a.y > b.y);
+    state.toRemove = toRemove;
+    return toRemove;
+}
+
+function populateInterface(toRemove=[]) {
     // populate the interface with the generated game
     if (!state.game) return; // return if game dne
     const d = state.game.getDimension() ** 2;
@@ -63,9 +93,21 @@ function populateInterface() {
     const squares = document.querySelectorAll('sq');
     const values = [];
     for (let y = 0; y < d; y++) {
-        let row = board[y];
+        let block = board[y];
         for (let x = 0; x < d; x++) {
-            values.push(row[x]);
+            if (state.mode < 9) {
+                let skip = false;
+                let attempt = 0;
+                while (skip === false && attempt < toRemove.length) {
+                    if (toRemove[attempt].x == x && toRemove[attempt].y == y) {
+                        skip = true;
+                    }
+                    attempt += 1;
+                }
+                values.push(skip ? '' : block[x]);
+            } else {
+                values.push('');
+            }
         }
     }
     if (squares.length !== values.length) {
@@ -74,6 +116,7 @@ function populateInterface() {
     }
     for (let i = 0; i < squares.length; i++) {
         squares[i].innerHTML = values[i];
+        if (values[i] !== '') squares[i].classList.add('prefill');
     }
 }
 
@@ -82,6 +125,7 @@ function clearInterface() {
     const squares = document.querySelectorAll('sq');
     for (let i = 0; i < squares.length; i++) {
         squares[i].innerHTML = '';
+        squares[i].classList = '';
     }
 }
 
@@ -95,10 +139,15 @@ window.onload = () => {
 
 
     body.addEventListener('click', (e) => {
-       resetState();
         const isSq = e.target.nodeName === "SQ";
+        const isCtrl = e.target.nodeName === "CTRL";
 
-        if (isSq) {
+        if (isCtrl) {
+            state.targetSq.innerText = e.target.innerText === 'x' ? '' : e.target.innerText;
+        }
+
+        resetState();
+        if (isSq && !e.target.classList.contains('prefill')) {
             state.userInputProgress = true;
             e.target.classList.add('updating');
             state.targetSq = e.target;
