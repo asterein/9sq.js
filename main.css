@@ -35,12 +35,46 @@ header, footer {
 header {
     font-size: 1.5rem;
     background: #333;
-    margin-bottom: 1rem;
+    margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+header h1 {
+    border-right: 2px solid #555;
+    padding-right: 1rem;
+    margin-right: 1rem;
+}
+
+header img {
+    max-height: 50px;
+    max-width: 50px;
+    position: absolute;
+    bottom: -60px;
+    transition: ease-in-out 0.5s;
+}
+
+header:hover img {
+    bottom: -10px;
+    transition: ease-in-out 0.5s;
+}
+
+.git {
+    font-size: 1rem;
+    font-family: monospace;
+    text-decoration: underline;
+}
+
+.git:hover {
+    color: #ccc;
+    font-style: italic;
 }
 
 footer {
     text-align: center;
-    margin-top: 3rem;
+    margin-top: 2rem;
 }
 
 main {

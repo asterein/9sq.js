@@ -17,11 +17,17 @@ function resetState() {
 }
 
 function toggleMode() {
+    let newGame = state.game !== null ? confirm('Are you sure you want to change modes? This will erase your current game.') : true;
+    if (!newGame) return;
+    clearInterface();
+    resetState();
+    if (state.game) {
+        state.game = null;
+    }
     const mode = document.querySelector('mode');
     if (mode === null) return;
     state.mode = state.mode === 9 ? 0 : state.mode + 1;
     mode.innerHTML = state.mode;
-    clearInterface();
 }
 
 function getInterfaceState(dimension=3) {
@@ -142,7 +148,7 @@ window.onload = () => {
         const isSq = e.target.nodeName === "SQ";
         const isCtrl = e.target.nodeName === "CTRL";
 
-        if (isCtrl) {
+        if (isCtrl && state.targetSq) {
             state.targetSq.innerText = e.target.innerText === 'x' ? '' : e.target.innerText;
         }
 
