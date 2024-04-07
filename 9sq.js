@@ -136,7 +136,7 @@ function clearInterface() {
 }
 
 function play(id) {
-    const audio = new Audio(`/${id}.mp3`);
+    const audio = new Audio(`${id}.mp3`);
     audio.play();
 }
 
