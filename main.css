@@ -65,6 +65,7 @@ header:hover img {
     font-size: 1rem;
     font-family: monospace;
     text-decoration: underline;
+    color: #aaa;
 }
 
 .git:hover {
@@ -90,6 +91,7 @@ button {
     background: #333;
     border: none;
     cursor: pointer;
+    color: #fff;
 }
 
 button:hover {
