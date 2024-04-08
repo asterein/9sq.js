@@ -46,6 +46,10 @@ sq.updating {
     background: #333;
 }
 
+sq.ctrl {
+    border: 1px solid red;
+}
+
 sq.prefill {
     background: #222;
     cursor: default;

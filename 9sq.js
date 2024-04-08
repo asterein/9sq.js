@@ -7,6 +7,11 @@ let state = {
 }
 
 function resetState() {
+    const squares = document.querySelectorAll('sq');
+    for (let i = 0; i < squares.length; i++) {
+        squares[i].classList.remove('ctrl');
+    }
+
     if (state.userInputProgress) {
         state.userInputProgress = false;
     }
@@ -176,6 +181,14 @@ window.onload = () => {
         }
 
         resetState();
+
+        if (isCtrl) {
+            const squares = document.querySelectorAll('sq');
+            for (let i = 0; i < squares.length; i++) {
+                if (squares[i].innerText == e.target.innerText) squares[i].classList.add('ctrl');
+            }
+        }
+
         if (isSq && !e.target.classList.contains('prefill')) {
             state.userInputProgress = true;
             e.target.classList.add('updating');
