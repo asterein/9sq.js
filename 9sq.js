@@ -182,7 +182,7 @@ window.onload = () => {
 
         resetState();
 
-        if (isCtrl) {
+        if (isCtrl && e.target.innerText != '') {
             const squares = document.querySelectorAll('sq');
             for (let i = 0; i < squares.length; i++) {
                 if (squares[i].innerText == e.target.innerText) squares[i].classList.add('ctrl');
