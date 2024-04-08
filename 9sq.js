@@ -14,6 +14,12 @@ function resetState() {
         state.targetSq.classList.remove('updating');
         state.targetSq = null;
     }
+
+    if (isGameComplete()) {
+        state.game = null;
+        state.toRemove = [];
+        alert('You won!');
+    }
 }
 
 function toggleMode() {
@@ -48,6 +54,18 @@ function getInterfaceState(dimension=3) {
     }
     console.log("GAME STATE BLOCKS: %o", gameStateBlocks);
     return gameStateBlocks;
+}
+
+function isGameComplete() {
+    if (state.game === null) return false;
+    const interfaceState = getInterfaceState(state.game.getDimension());
+    const gameBlocks = state.game.getBlocks();
+    for (let b = 0; b < gameBlocks.length; b++) {
+        for (let c = 0; c < gameBlocks.length; c++) {
+            if (interfaceState[b][c] != gameBlocks[b][c]) return false;
+        }
+    }
+    return true;
 }
 
 function newGame() {
@@ -142,6 +160,11 @@ function play(id) {
 
 window.onload = () => {
     const body = document.querySelector('body');
+    const wnvd = document.getElementById('wnvd');
+
+    wnvd.addEventListener('mousedown', (e) => {
+        play('wnvd');
+    });
 
 
     body.addEventListener('click', (e) => {
